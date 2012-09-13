@@ -3,60 +3,72 @@ import javax.swing.JFrame;
 import javax.swing.ImageIcon;
 
 public class game extends JFrame {
-
-	private 	Screen 		screen;
-	private		Image		bg;
-	private		Animation	animatedFace;
 	
+	private    Animation        animated;
+	private    screenManager    screen;
+	private    Image            bg;
 	
 	public static void main(String[] args){
+		game g = new game();
+		g.run();
 		
-		DisplayMode 	dm 	= new DisplayMode(800, 600, 16, DisplayMode.REFRESH_RATE_UNKNOWN);
-		game 			b 	= new game();
-		
-		b.run(dm);
-	}
-
-	//loads pictures and adds scene
-	public void loadPics(){
-		
-		bg				= new ImageIcon("C:\\Users\\User\\Documents\\Java\\Images\\bg.jpg").getImage();
-		Image open		= new ImageIcon("C:\\Users\\User\\Documents\\Java\\Images\\eyes_open.png").getImage();
-		Image closed	= new ImageIcon("C:\\Users\\User\\Documents\\Java\\Images\\eyes_closed.png").getImage();
-		animatedFace 	= new Animation();
-		
-		animatedFace.addScene(open, 250);
-		animatedFace.addScene(closed, 250);
 	}
 	
-	//runs the animation
-	public void run(DisplayMode dm){
+	//display modes array
+	private static final DisplayMode modes1[] = {
 		
-		screen		= new Screen();
+		new DisplayMode(800, 600, 32, 0),
+		new DisplayMode(800, 600, 24, 0),
+		new DisplayMode(800, 600, 16, 0),
+		
+		new DisplayMode(640, 480, 32, 0),
+		new DisplayMode(640, 480, 24, 0),
+		new DisplayMode(640, 480, 16, 0),
+	};
+	
+	//load images and add scenes
+	public void loadImages(){
+		
+		Image open      = new ImageIcon("C:\\Users\\User\\newboston-java\\Images\\eyes_open.png").getImage();
+		Image close     = new ImageIcon("C:\\Users\\User\\newboston-java\\Images\\eyes_closed.png").getImage();
+		      bg        = new ImageIcon("C:\\Users\\User\\newboston-java\\Images\\bg.jpg").getImage();
+		      animated  = new Animation();
+		
+		animated.addScene(open, 250);
+		animated.addScene(close, 250);
+	}
+	
+	//main method called from main
+	public void run(){
+		
+		screen = new screenManager();
 		
 		try{
-			screen.setFullScreen(dm, new JFrame());
-			loadPics();
+			DisplayMode dm = screen.findFirstCompatibleMode(modes1);
+			screen.setFullScreen(dm);
+			loadImages();
 			movieLoop();
 		}finally{
 			screen.restoreScreen();
 		}
 	}
 	
-	//movie loop
+	//play movie
 	public void movieLoop(){
 		
-		long	startingTime	= System.currentTimeMillis();
-		long	cummulTime		= startingTime;
+		long     startingTime     = System.currentTimeMillis();
+		long     cummlTime        = startingTime;
 		
-		while(cummulTime - startingTime < 5000){
-			long		timePassed		= System.currentTimeMillis() - cummulTime;
-			Graphics 	g				= screen.getFullScreenWindow().getGraphics();
+		while(cummlTime - startingTime < 7000){
+			long timePassed = System.currentTimeMillis() - cummlTime;
+			cummlTime += timePassed;
+			animated.update(timePassed);
 			
-			cummulTime += timePassed;
-			animatedFace.update(timePassed);
+			//draw and update screen
+			Graphics2D g = screen.getGraphics();
 			draw(g);
 			g.dispose();
+			screen.update();
 			
 			try{
 				Thread.sleep(20);
@@ -64,37 +76,16 @@ public class game extends JFrame {
 				
 			}
 		}
+		
 	}
 	
-	//draw method
+	//draw graphics
 	public void draw(Graphics g){
-		
 		g.drawImage(bg, 0, 0, null);
-		g.drawImage(animatedFace.getImage(), 0, 0, null);
+		g.drawImage(animated.getImage(), 0, 0, null);
 	}
 	
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
