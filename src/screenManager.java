@@ -21,7 +21,7 @@ public class screenManager {
 	}
 	
 	//compares DM passed into vc DM and sees if they match
-	public DisplayMode finfFirstCompatibleMode(DisplayMode modes[]){
+	public DisplayMode findFirstCompatibleMode(DisplayMode modes[]){
 		
 		DisplayMode goodModes[] = vc.getDisplayModes();
 		for(int x = 0; x < modes.length; x++){
@@ -31,12 +31,36 @@ public class screenManager {
 				}
 			}
 		}
+		return null;
 	}
 	
 	//get current DM
 	public DisplayMode getCurrentDM(){
 		
 		return vc.getDisplayMode();
+	}
+	
+	//checks if two modes match each other
+	public boolean displayModesMatch(DisplayMode m1, DisplayMode m2){
+		
+		if(m1.getWidth() != m2.getWidth() || 
+				m1.getHeight() != m2.getHeight()){
+			return false;
+		}
+		
+		if(m1.getBitDepth() != DisplayMode.BIT_DEPTH_MULTI && 
+				m2.getBitDepth() != DisplayMode.BIT_DEPTH_MULTI && 
+				m1.getBitDepth() != m2.getBitDepth()){
+			return false;
+		}
+		
+		if(m1.getRefreshRate() != DisplayMode.REFRESH_RATE_UNKNOWN && 
+				m2.getRefreshRate() != DisplayMode.REFRESH_RATE_UNKNOWN && 
+				m1.getRefreshRate() != m2.getRefreshRate()){
+			return false;
+		}
+		
+		return true;
 	}
 	
 }
