@@ -3,17 +3,17 @@ import java.util.ArrayList;
 
 public class Animation {
 
-	private 	ArrayList 	scenes;
-	private		int			sceneIndex;
-	private		long		movieTime;
-	private		long		totalTime;
+	private     ArrayList   scenes;
+	private	    int         sceneIndex;
+	private	    long        movieTime;
+	private	    long        totalTime;
 	
 	//CONSTRUCTOR
 	public Animation(){
 	/*Sets variables to 0 and starts animation
 	 */
-		scenes 		= new ArrayList();
-		totalTime	= 0;
+		scenes      = new ArrayList();
+		totalTime   = 0;
 		start();
 	}
 	
@@ -33,11 +33,11 @@ public class Animation {
 	public synchronized void update(long timePassed){
 		
 		if(scenes.size() > 1){
-			movieTime 	+= timePassed;
+			movieTime += timePassed;
 			
 			if(movieTime >= totalTime){
-				movieTime 	= 0;
-				sceneIndex	= 0;
+				movieTime   = 0;
+				sceneIndex  = 0;
 			}
 			
 			while(movieTime > getScene(sceneIndex).endTime){
